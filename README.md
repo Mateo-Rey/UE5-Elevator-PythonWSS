@@ -58,7 +58,7 @@ python unreal_websocket_ui.py
   * TopUnloadPlatform
 * Create one Character Blueprint
     * Human/Character
-* Using the modeling tool make stairs that are the size of the elevator platform
+* Using the modeling tool to make stairs that are the size of the elevator platform
 ### 7. Placement of Blueprints
 * Most placements are subjective but the BottomUnloadPlatform should be under the floor as an indicator of the unload zone and the ElevatorPlatform must connect with the TopPlatform once it moves up.
 * Additionally the TopPlatform and ElevatorPlatform must have a NavInvoker component added, along with the AI Pawns, so that when you add a NavMeshBound it will generate on and around the platforms.
