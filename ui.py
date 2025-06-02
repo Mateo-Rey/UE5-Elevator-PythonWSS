@@ -6,13 +6,14 @@ from tkinter import *
 import uuid
 import datetime
 import math
+
 # Globals
 loop = None
 websocket = None
 start_time = None
 data = None
 event = None
-stop_timer = False # Boolean for checking if timer is stopped
+stop_timer = False  # Boolean for checking if timer is stopped
 timer_job = None  # This will hold the ID returned by root.after()
 # Tkinter variables (initialized later)
 people_var = None
@@ -22,6 +23,23 @@ state_var = None
 groupId_var = None
 root = None
 
+
+def generate_grid_vectors(root, rows, columns, actor_length, actor_width):
+    vectors = {}
+    start_x = float(root.split()[0][2:])
+    start_y = float(root.split()[1][2:])
+    z = float(root.split()[2][2:])  # Z stays constant for all grid positions
+
+    for col in range(columns):
+        for row in range(rows):
+            x = start_x + (col * actor_length)
+            y = start_y - (row * actor_width) if event == "dimensions" else start_y + (row * actor_width)
+            vector_str = f"X={x:.2f} Y={y:.2f} Z={z:.2f}"
+            vectors[vector_str] = vector_str
+
+    return vectors
+
+
 # Async listener
 async def listen_for_messages(ws):
     try:
@@ -30,60 +48,56 @@ async def listen_for_messages(ws):
             message = json.loads(json_message)
             receivedData = message.get("Data", {})
             state_value = receivedData.get("state")
+            time_value = receivedData.get("time")
             eventType = message.get("EventType")
+            event = eventType
             if eventType == "stateUpdate":
-                if state_value == "moving":
-                    def update_ui():
-                        state_var.set(state_value)
+
+                def update_ui():
+                    state_var.set(state_value)
+                    time_var.set(time_value)
+                    if state_value == "moving":
                         renderUI()
-                    root.after(0, update_ui)
-                if state_value == "top_idle":
-                    def update_ui():
-                        state_var.set(state_value)
+                        start_timer()
+                    elif state_value == "top_idle":
                         time_var.set("10")
                         direction_var.set("down")
                         renderUI()
-                    root.after(0, update_ui)
-                else:
-                    def update_ui():
-                        state_var.set(state_value)
+                    elif state_value == "bottom_idle":
                         time_var.set("10")
                         direction_var.set("up")
                         renderUI()
-                    root.after(0, update_ui)
-            if eventType == "dimensions":
+                    else:
+                        renderUI()
+
+                root.after(0, update_ui)
+            if eventType in ("dimensions", "unloadDimensions"):
                 length = float(receivedData.get("platform_length"))
                 width = float(receivedData.get("platform_width"))
-                actorLength = 310
-                actorWidth = 180
-                print(length, width)
-                rowCount = width/actorWidth
-                columnCount = length/actorLength
-                event = "calculateSize"
-                data = {
-                    "rowCount": math.floor(rowCount),
-                    "columnCount": math.floor(columnCount),
-                }
+                root_position = receivedData.get("root")
+                actorLength = 200
+                actorWidth = 200
+
+                rowCount = math.floor(width / actorWidth)
+                columnCount = math.floor(length / actorLength)
+                print(root_position)
+                grid_vectors = generate_grid_vectors(
+                    root_position, rowCount, columnCount, actorLength, actorWidth
+                )
+
+                data = grid_vectors
+
+                event = (
+                    "calculateSize"
+                    if eventType == "dimensions"
+                    else "calculateUnloadSize"
+                )
                 asyncio.run_coroutine_threadsafe(send_message(), loop)
-            if eventType == "unloadDimensions":
-                length = float(receivedData.get("platform_length"))
-                width = float(receivedData.get("platform_width"))
-                actorLength = 310
-                actorWidth = 180
-                print(length, width)
-                rowCount = width/actorWidth
-                columnCount = length/actorLength
-                event = "calculateUnloadSize"
-                data = {
-                    "rowCount": math.floor(rowCount),
-                    "columnCount": math.floor(columnCount),
-                }
-                asyncio.run_coroutine_threadsafe(send_message(), loop)
-                
-                    
+
             print(f"[CLIENT RECEIVED] {message}")
     except websockets.exceptions.ConnectionClosed:
         print("[CLIENT] Connection closed")
+
 
 # WebSocket connection
 async def start_connection():
@@ -93,6 +107,7 @@ async def start_connection():
     print("[CLIENT] Connected to WebSocket")
     asyncio.create_task(listen_for_messages(websocket))
 
+
 # Background async loop
 def start_async_loop():
     global loop
@@ -101,6 +116,7 @@ def start_async_loop():
     loop.run_until_complete(start_connection())
     loop.run_forever()
 
+
 # Message sender
 async def send_message():
     if websocket:
@@ -108,10 +124,14 @@ async def send_message():
             "eventType": event,
             "eventTimestamp": str(datetime.datetime.now()),
             "source": {"ClientType": "python"},
-            "data": data
+            "data": data,
         }
         await websocket.send(json.dumps(message))
-        print(f"[CLIENT SENT] {message}")
+        if (message["eventType"] == "calculateSize" or message["eventType"] == "calculateUnloadSize"):
+            print("[CLIENT SENT] Calculated Dimensions")
+        else:
+            print(f"[CLIENT SENT] {message}")
+
 
 # UI behavior
 def reset():
@@ -123,9 +143,7 @@ def reset():
         root.after_cancel(timer_job)
         timer_job = None
 
-    data = {
-        "state": "reset"
-    }
+    data = {"state": "reset"}
     asyncio.run_coroutine_threadsafe(send_message(), loop)
 
     state_var.set("bottom_idle")
@@ -134,16 +152,29 @@ def reset():
     stop_timer = False  # Optional: Only allow next timer when elevator is sent again
 
 
-def updateTime():
+def start_timer():
     global timer_job
-    current_time = int(time_var.get())
-    if current_time > 0 and not stop_timer:
-        current_time -= 1
-        time_var.set(str(current_time))
-        timer_job = root.after(1000, updateTime)  # Store after job ID
-    else:
-        time_var.set(str(5))
-        timer_job = None
+    if timer_job is not None:
+        root.after_cancel(timer_job)
+
+    def updateTime():
+        global timer_job
+        try:
+            current_time = int(time_var.get())
+        except ValueError:
+            current_time = 0
+        print(f"[DEBUG] Timer tick: {current_time}")
+
+        if current_time > 0 and not stop_timer:
+            current_time -= 1
+            time_var.set(str(current_time))
+            timer_job = root.after(1000, updateTime)
+        else:
+            time_var.set("0")
+            timer_job = None
+            print("[DEBUG] Timer complete or stopped")
+
+    updateTime()
 
 
 def sendElevator():
@@ -157,11 +188,12 @@ def sendElevator():
         "people": people_var.get(),
         "time": time_var.get(),
         "direction": direction_var.get(),
-        "groupId": groupId_var.get()
+        "groupId": groupId_var.get(),
     }
     asyncio.run_coroutine_threadsafe(send_message(), loop)
     state_var.set("boarding")
     renderUI()
+
 
 # Main UI rendering
 def renderUI():
@@ -171,7 +203,7 @@ def renderUI():
     state = state_var.get()
     Button(root, text="Reset", command=reset).pack()
 
-    if state == "bottom_idle" or state =="top_idle":
+    if state == "bottom_idle" or state == "top_idle":
         Label(root, text="Number of People").pack()
         Entry(root, textvariable=people_var).pack()
         Label(root, text="Direction").pack()
@@ -188,10 +220,10 @@ def renderUI():
         Label(root, bg="green", fg="white", textvariable=people_var).pack()
         Label(root, text="Time Until Complete").pack()
         Label(root, bg="green", fg="white", textvariable=time_var).pack()
-        updateTime()
 
     elif state == "unloading":
         Label(root, text="Please wait while elevator unloads").pack()
+
 
 # Create the window and variables
 def createUI():
@@ -209,6 +241,7 @@ def createUI():
 
     renderUI()
     root.mainloop()
+
 
 # Main
 if __name__ == "__main__":
