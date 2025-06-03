@@ -70,20 +70,18 @@ python unreal_websocket_ui.py
   ![image](https://github.com/user-attachments/assets/243e055b-d2aa-41b2-a052-b94893b13f17)
   ![image](https://github.com/user-attachments/assets/65ab0d83-a744-408a-8160-3a2569eb2321)
 * ElevatorPlatform
-  ![image](https://github.com/user-attachments/assets/ff1f339e-87cd-4d51-808f-43999be6d3f7)
-  ![image](https://github.com/user-attachments/assets/726b220a-cdcc-4a0c-aef1-b775164a4d2c)
-  ![image](https://github.com/user-attachments/assets/ab6485a0-b255-45b6-ae56-66eb6d110e47)
-  ![image](https://github.com/user-attachments/assets/14cc25ad-0d31-4f19-8821-399ce12136e7)
-  ![image](https://github.com/user-attachments/assets/0108b65d-c307-4d5f-b2d7-07d6b93a240b)
-* Functions/Variables
-  ![image](https://github.com/user-attachments/assets/f84d3938-41d4-47d0-85b3-9b04b566016f)
-  ![image](https://github.com/user-attachments/assets/f68e8ca2-c2fa-4137-a71c-8afd1d7752be)
-  ![image](https://github.com/user-attachments/assets/e3ade783-e262-427b-a541-fb93f177ea8f)
-  ![image](https://github.com/user-attachments/assets/b0c6d54d-0c89-45fc-84b0-38ac16e9472e)
-  ![image](https://github.com/user-attachments/assets/21cc22d3-1ea2-42ee-adba-3cf3da1c1517)
-  ![image](https://github.com/user-attachments/assets/07f94ac0-f665-4b63-8e71-75c8bf5eb076)
-  ![image](https://github.com/user-attachments/assets/e5c1df81-ec46-4ab5-b36c-ef33a21ebbec)
-  ![image](https://github.com/user-attachments/assets/59f3bab2-6a2a-41d9-b377-9c32fe7bf4ff)
+  ![image](https://github.com/user-attachments/assets/5179919a-8a8d-4cec-8c30-3fb9cd936720)
+  ![image](https://github.com/user-attachments/assets/034eeb8c-2fd1-421b-b769-0cc38e2b78ee)
+  ![image](https://github.com/user-attachments/assets/cf4d6ec7-f7d9-4b2a-8016-0240c29c0129)
+  ![image](https://github.com/user-attachments/assets/415bcbb4-a661-4521-80e9-9eb18435934c)
+  ![image](https://github.com/user-attachments/assets/b34a1bc8-cb41-4a9a-9e95-7487c2da5d35)
+* Functions/Variables For ElevatorPlatform
+  ![image](https://github.com/user-attachments/assets/3d8ea6d4-5908-4858-88d3-339ed4bfe88a)
+  ![image](https://github.com/user-attachments/assets/64850982-8e9d-4ee2-bcc6-f4ff3e6ee7f6)
+  ![image](https://github.com/user-attachments/assets/0a4c27f4-1dd9-42f6-8a25-33135dba42a6)
+  ![image](https://github.com/user-attachments/assets/9b7c0da4-c983-481f-87f0-0074d1ee0e99)
+  ![image](https://github.com/user-attachments/assets/40258ab6-596f-4da3-9724-f8d1af915dd7)
+  ![image](https://github.com/user-attachments/assets/215ce2ce-ea60-4a58-828d-98c07323a4f4)
 * Top Unload Platform
   ![image](https://github.com/user-attachments/assets/7136f397-94ce-4ed4-9e68-d28890e1f163)
 * Gate
