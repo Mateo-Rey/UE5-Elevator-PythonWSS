@@ -66,9 +66,9 @@ python unreal_websocket_ui.py
 * Lastly the Roots must be placed on the top left corner of each platform since the rows and columns for the grid are generated left to right and top to bottom
 ### 8. Follow Blueprint Setup Below
 * Human/Character
-  ![image](https://github.com/user-attachments/assets/585193c3-b4dc-487c-9c98-957070c3cfa3)
-  ![image](https://github.com/user-attachments/assets/1ad4a126-b9de-4ca0-8f3e-f5c56c880f3b)
-  ![image](https://github.com/user-attachments/assets/cf49dbcd-ad41-4ce9-8f62-4b5e08847c9c)
+  ![image](https://github.com/user-attachments/assets/94fbe2cb-a288-4a11-b310-732a25a35a18)
+  ![image](https://github.com/user-attachments/assets/243e055b-d2aa-41b2-a052-b94893b13f17)
+  ![image](https://github.com/user-attachments/assets/65ab0d83-a744-408a-8160-3a2569eb2321)
 * ElevatorPlatform
   ![image](https://github.com/user-attachments/assets/ff1f339e-87cd-4d51-808f-43999be6d3f7)
   ![image](https://github.com/user-attachments/assets/726b220a-cdcc-4a0c-aef1-b775164a4d2c)
