@@ -8,13 +8,16 @@ import datetime
 import math
 
 # Globals
+groupIdArr = None
+fullFloors = {}
 loop = None
 websocket = None
 start_time = None
 data = None
 event = None
-stop_timer = False  # Boolean for checking if timer is stopped
-timer_job = None  # This will hold the ID returned by root.after()
+stop_timer = False
+timer_job = None
+
 # Tkinter variables (initialized later)
 people_var = None
 time_var = None
@@ -28,19 +31,22 @@ def generate_grid_vectors(root, rows, columns, actor_length, actor_width):
     vectors = {}
     start_x = float(root.split()[0][2:])
     start_y = float(root.split()[1][2:])
-    z = float(root.split()[2][2:])  # Z stays constant for all grid positions
+    z = float(root.split()[2][2:])
 
     for col in range(columns):
         for row in range(rows):
             x = start_x + (col * actor_length)
-            y = start_y - (row * actor_width) if event == "dimensions" else start_y + (row * actor_width)
+            y = (
+                start_y - (row * actor_width)
+                if event == "dimensions"
+                else start_y + (row * actor_width)
+            )
             vector_str = f"X={x:.2f} Y={y:.2f} Z={z:.2f}"
             vectors[vector_str] = vector_str
 
     return vectors
 
 
-# Async listener
 async def listen_for_messages(ws):
     try:
         async for json_message in ws:
@@ -48,9 +54,12 @@ async def listen_for_messages(ws):
             message = json.loads(json_message)
             receivedData = message.get("Data", {})
             state_value = receivedData.get("state")
+            floor_value = receivedData.get("floor")
+            groupId_value = receivedData.get("groupId")
             time_value = receivedData.get("time")
             eventType = message.get("EventType")
             event = eventType
+
             if eventType == "stateUpdate":
 
                 def update_ui():
@@ -59,18 +68,12 @@ async def listen_for_messages(ws):
                     if state_value == "moving":
                         renderUI()
                         start_timer()
-                    elif state_value == "top_idle":
-                        time_var.set("10")
-                        direction_var.set("down")
-                        renderUI()
-                    elif state_value == "bottom_idle":
-                        time_var.set("10")
-                        direction_var.set("up")
-                        renderUI()
                     else:
                         renderUI()
 
                 root.after(0, update_ui)
+            if eventType == "floorUpdate":
+                fullFloors[groupId_value] = str(int(floor_value) + 1)
             if eventType in ("dimensions", "unloadDimensions"):
                 length = float(receivedData.get("platform_length"))
                 width = float(receivedData.get("platform_width"))
@@ -80,13 +83,10 @@ async def listen_for_messages(ws):
 
                 rowCount = math.floor(width / actorWidth)
                 columnCount = math.floor(length / actorLength)
-                print(root_position)
                 grid_vectors = generate_grid_vectors(
                     root_position, rowCount, columnCount, actorLength, actorWidth
                 )
-
                 data = grid_vectors
-
                 event = (
                     "calculateSize"
                     if eventType == "dimensions"
@@ -99,7 +99,6 @@ async def listen_for_messages(ws):
         print("[CLIENT] Connection closed")
 
 
-# WebSocket connection
 async def start_connection():
     global websocket
     uri = "ws://localhost:8080"
@@ -108,7 +107,6 @@ async def start_connection():
     asyncio.create_task(listen_for_messages(websocket))
 
 
-# Background async loop
 def start_async_loop():
     global loop
     loop = asyncio.new_event_loop()
@@ -117,7 +115,6 @@ def start_async_loop():
     loop.run_forever()
 
 
-# Message sender
 async def send_message():
     if websocket:
         message = {
@@ -127,18 +124,21 @@ async def send_message():
             "data": data,
         }
         await websocket.send(json.dumps(message))
-        if (message["eventType"] == "calculateSize" or message["eventType"] == "calculateUnloadSize"):
+        if (
+            message["eventType"] == "calculateSize"
+            or message["eventType"] == "calculateUnloadSize"
+        ):
             print("[CLIENT SENT] Calculated Dimensions")
         else:
             print(f"[CLIENT SENT] {message}")
 
 
-# UI behavior
 def reset():
-    global data, stop_timer, timer_job, event
+    global data, stop_timer, timer_job, event, groupIdArr, fullFloors
     event = "reset"
+    groupIdArr = []
+    fullFloors = []
     stop_timer = True
-
     if timer_job is not None:
         root.after_cancel(timer_job)
         timer_job = None
@@ -146,10 +146,11 @@ def reset():
     data = {"state": "reset"}
     asyncio.run_coroutine_threadsafe(send_message(), loop)
 
-    state_var.set("bottom_idle")
-    direction_var.set("up")
+    state_var.set("newIdle")
+    direction_var.set("1")
+    groupId_var.set(str(uuid.uuid4()))
     renderUI()
-    stop_timer = False  # Optional: Only allow next timer when elevator is sent again
+    stop_timer = False
 
 
 def start_timer():
@@ -163,6 +164,7 @@ def start_timer():
             current_time = int(time_var.get())
         except ValueError:
             current_time = 0
+
         print(f"[DEBUG] Timer tick: {current_time}")
 
         if current_time > 0 and not stop_timer:
@@ -178,40 +180,89 @@ def start_timer():
 
 
 def sendElevator():
-    global start_time
-    global data
-    global event
+    global start_time, data, event, groupIdArr
+    currentID = groupId_var.get()
+    floor = direction_var.get()
+
+    if floor in fullFloors.items():
+        state_var.set("newIdle")
+        renderUI()
+        return
+
+    if currentID not in groupIdArr:
+        groupIdArr.append(currentID)
+
     start_time = int(time_var.get())
     event = "startElevator"
     data = {
         "state": "boarding",
         "people": people_var.get(),
         "time": time_var.get(),
-        "direction": direction_var.get(),
-        "groupId": groupId_var.get(),
+        "direction": str(int(floor) - 1),
+        "groupId": currentID,
     }
     asyncio.run_coroutine_threadsafe(send_message(), loop)
-    state_var.set("boarding")
+    groupId_var.set(str(uuid.uuid4()))
     renderUI()
 
 
-# Main UI rendering
+def validate_input(value_if_allowed):
+    if value_if_allowed == "":
+        return True
+    if value_if_allowed.isdigit():
+        num = int(value_if_allowed)
+        return 1 <= num <= 4
+    return False
+
+
+def switchIdle():
+    if state_var.get() == "newIdle":
+        state_var.set("madeIdle")
+    else:
+        state_var.set("newIdle")
+    renderUI()
+
+
+def setGroupId(groupId):
+    groupId_var.set(groupId)
+
+
 def renderUI():
     for widget in root.winfo_children():
         widget.destroy()
 
     state = state_var.get()
+    vcmd = (root.register(validate_input), "%P")
     Button(root, text="Reset", command=reset).pack()
-
-    if state == "bottom_idle" or state == "top_idle":
+    Label(root, text="Full Floors").pack()
+    for floor in fullFloors.items():
+        Label(root, text=f"{floor}").pack()
+    if state == "newIdle":
+        Button(root, text="Move Created Group", command=switchIdle).pack()
         Label(root, text="Number of People").pack()
         Entry(root, textvariable=people_var).pack()
-        Label(root, text="Direction").pack()
-        Entry(root, textvariable=direction_var).pack()
+        Label(root, text="Enter Floor Number 1-4").pack()
+        Entry(
+            root, textvariable=direction_var, validate="key", validatecommand=vcmd
+        ).pack()
         Label(root, text="Time of Travel").pack()
         Entry(root, textvariable=time_var).pack()
         Button(root, text="Send", command=sendElevator).pack()
+    elif state == "madeIdle":
+        Button(root, text="Move New Group", command=switchIdle).pack()
+        Label(root, text="Click on the GroupId you wish to move").pack()
+        for groupId in groupIdArr:
+            Button(
+                root, text=groupId, command=lambda val=groupId: setGroupId(val)
+            ).pack()
 
+        Label(root, text="Enter Floor Number 1-5").pack()
+        Entry(
+            root, textvariable=direction_var, validate="key", validatecommand=vcmd
+        ).pack()
+        Label(root, text="Time of Travel").pack()
+        Entry(root, textvariable=time_var).pack()
+        Button(root, text="Send", command=sendElevator).pack()
     elif state == "boarding":
         Label(root, text="Please wait while guests board the elevator").pack()
 
@@ -225,25 +276,23 @@ def renderUI():
         Label(root, text="Please wait while elevator unloads").pack()
 
 
-# Create the window and variables
 def createUI():
-    global people_var, time_var, direction_var, state_var, groupId_var, root
+    global people_var, time_var, direction_var, state_var, groupId_var, root, groupIdArr, fullFloors
     root = Tk()
     root.title("UI for UE5 Project")
-    root.geometry("400x200")
-
-    # Initialize StringVars *after* root
+    root.geometry("400x400")
+    groupIdArr = []
+    fullFloors = {}
     people_var = StringVar(value="5")
     time_var = StringVar(value="10")
-    direction_var = StringVar(value="up")
-    state_var = StringVar(value="bottom_idle")
+    direction_var = StringVar(value="2")
+    state_var = StringVar(value="newIdle")
     groupId_var = StringVar(value=str(uuid.uuid4()))
 
     renderUI()
     root.mainloop()
 
 
-# Main
 if __name__ == "__main__":
     threading.Thread(target=start_async_loop, daemon=True).start()
     createUI()
