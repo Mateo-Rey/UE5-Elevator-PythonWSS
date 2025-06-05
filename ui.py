@@ -17,14 +17,14 @@ data = None
 event = None
 stop_timer = False
 timer_job = None
-
+root = None
 # Tkinter variables (initialized later)
 people_var = None
 time_var = None
 direction_var = None
 state_var = None
 groupId_var = None
-root = None
+floors_var = None
 
 
 def generate_grid_vectors(root, rows, columns, actor_length, actor_width):
@@ -74,24 +74,24 @@ async def listen_for_messages(ws):
                 root.after(0, update_ui)
             if eventType == "floorUpdate":
                 fullFloors[groupId_value] = str(int(floor_value) + 1)
-            if eventType in ("dimensions", "unloadDimensions"):
+            if eventType in ("dimensions", "unloadDimensions", "unloadPlatformDimensions"):
                 length = float(receivedData.get("platform_length"))
                 width = float(receivedData.get("platform_width"))
                 root_position = receivedData.get("root")
                 actorLength = 200
                 actorWidth = 200
-
                 rowCount = math.floor(width / actorWidth)
                 columnCount = math.floor(length / actorLength)
                 grid_vectors = generate_grid_vectors(
                     root_position, rowCount, columnCount, actorLength, actorWidth
                 )
                 data = grid_vectors
-                event = (
-                    "calculateSize"
-                    if eventType == "dimensions"
-                    else "calculateUnloadSize"
-                )
+                if eventType == "dimensions":
+                    event = "calculateSize"
+                elif eventType == "unloadDimensions":
+                    event = "calculateBottomUnloadSize"
+                else:
+                    event = "calculateUnloadSize"
                 asyncio.run_coroutine_threadsafe(send_message(), loop)
 
             print(f"[CLIENT RECEIVED] {message}")
@@ -127,8 +127,9 @@ async def send_message():
         if (
             message["eventType"] == "calculateSize"
             or message["eventType"] == "calculateUnloadSize"
+            or message["eventType"] == "calculateBottomUnloadSize"
         ):
-            print("[CLIENT SENT] Calculated Dimensions")
+            print(f"[CLIENT SENT] {message['eventType']}")
         else:
             print(f"[CLIENT SENT] {message}")
 
@@ -137,7 +138,7 @@ def reset():
     global data, stop_timer, timer_job, event, groupIdArr, fullFloors
     event = "reset"
     groupIdArr = []
-    fullFloors = []
+    fullFloors = {}
     stop_timer = True
     if timer_job is not None:
         root.after_cancel(timer_job)
@@ -146,8 +147,7 @@ def reset():
     data = {"state": "reset"}
     asyncio.run_coroutine_threadsafe(send_message(), loop)
 
-    state_var.set("newIdle")
-    direction_var.set("1")
+    state_var.set("createFloors")
     groupId_var.set(str(uuid.uuid4()))
     renderUI()
     stop_timer = False
@@ -205,15 +205,32 @@ def sendElevator():
     groupId_var.set(str(uuid.uuid4()))
     renderUI()
 
+def sendFloors():
+    global data, event
+    floors = floors_var.get()
+    event = "floorAmount"
+    data = {
+        "floors": floors
+    }
+    asyncio.run_coroutine_threadsafe(send_message(), loop)
+    state_var.set("newIdle")
+    floors_var.set(str(int(floors)+1))
+    renderUI()
 
 def validate_input(value_if_allowed):
     if value_if_allowed == "":
         return True
     if value_if_allowed.isdigit():
         num = int(value_if_allowed)
-        return 1 <= num <= 4
+        return 1 <= num <= int(floors_var.get())
     return False
-
+def validate_floors(value_if_allowed):
+    if value_if_allowed == "":
+        return True
+    if value_if_allowed.isdigit():
+        num = int(value_if_allowed)
+        return num > 1
+    return False
 
 def switchIdle():
     if state_var.get() == "newIdle":
@@ -233,15 +250,21 @@ def renderUI():
 
     state = state_var.get()
     vcmd = (root.register(validate_input), "%P")
+    floorvcmd = (root.register(validate_floors),"%P")
     Button(root, text="Reset", command=reset).pack()
-    Label(root, text="Full Floors").pack()
-    for floor in fullFloors.items():
-        Label(root, text=f"{floor}").pack()
-    if state == "newIdle":
+    if state == "createFloors":
+        Label(root, text="Please input the number of floors you want above the first").pack()
+        Entry(root, textvariable=floors_var, validate="key", validatecommand=floorvcmd).pack()
+        Button(root, text="Send", command=sendFloors).pack()
+    elif state == "newIdle":
+        Label(root, text="Full Floors").pack()
+        if fullFloors:
+            for floor in fullFloors.items():
+                Label(root, text=f"{floor}").pack()
         Button(root, text="Move Created Group", command=switchIdle).pack()
         Label(root, text="Number of People").pack()
         Entry(root, textvariable=people_var).pack()
-        Label(root, text="Enter Floor Number 1-4").pack()
+        Label(root, text=f"Enter Floor Number 1-{floors_var.get()}").pack()
         Entry(
             root, textvariable=direction_var, validate="key", validatecommand=vcmd
         ).pack()
@@ -249,6 +272,10 @@ def renderUI():
         Entry(root, textvariable=time_var).pack()
         Button(root, text="Send", command=sendElevator).pack()
     elif state == "madeIdle":
+        Label(root, text="Full Floors").pack()
+        if fullFloors:
+            for floor in fullFloors.items():
+                Label(root, text=f"{floor}").pack()
         Button(root, text="Move New Group", command=switchIdle).pack()
         Label(root, text="Click on the GroupId you wish to move").pack()
         for groupId in groupIdArr:
@@ -256,7 +283,7 @@ def renderUI():
                 root, text=groupId, command=lambda val=groupId: setGroupId(val)
             ).pack()
 
-        Label(root, text="Enter Floor Number 1-5").pack()
+        Label(root, text=f"Enter Floor Number 1-{floors_var.get()}").pack()
         Entry(
             root, textvariable=direction_var, validate="key", validatecommand=vcmd
         ).pack()
@@ -277,16 +304,17 @@ def renderUI():
 
 
 def createUI():
-    global people_var, time_var, direction_var, state_var, groupId_var, root, groupIdArr, fullFloors
+    global people_var, time_var, direction_var, state_var, groupId_var, root, groupIdArr, fullFloors, floors_var
     root = Tk()
     root.title("UI for UE5 Project")
     root.geometry("400x400")
     groupIdArr = []
     fullFloors = {}
     people_var = StringVar(value="5")
+    floors_var = StringVar(value="2")
     time_var = StringVar(value="10")
     direction_var = StringVar(value="2")
-    state_var = StringVar(value="newIdle")
+    state_var = StringVar(value="createFloors")
     groupId_var = StringVar(value=str(uuid.uuid4()))
 
     renderUI()
