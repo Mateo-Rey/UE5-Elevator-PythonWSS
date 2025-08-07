@@ -83,54 +83,49 @@ python unreal_websocket_ui.py
 
 <details>
 <summary>Click to expand</summary>
-
-<img width="2448" height="739" alt="Human 1" src="https://github.com/user-attachments/assets/a4eb8c66-ca77-419a-a4d9-9c6fada019fd" />
-<img width="2308" height="1086" alt="Human 2" src="https://github.com/user-attachments/assets/a3e88bfe-b401-44e7-9acc-124d2fd150a1" />
-<img width="2510" height="861" alt="Human 3" src="https://github.com/user-attachments/assets/a483e44a-3989-43a1-abf9-fb83b51d46a7" />
-<img width="2417" height="1059" alt="Human 4" src="https://github.com/user-attachments/assets/df0d9c75-823c-4ef5-b720-ef45de8de383" />
-
+<img width="2336" height="974" alt="image" src="https://github.com/user-attachments/assets/27ca238a-7bbb-4300-b437-8eba4e36adcc" />
+<img width="2481" height="608" alt="image" src="https://github.com/user-attachments/assets/07a0f639-d543-426e-b40c-62a7b2687b7c" />
+<img width="2424" height="814" alt="image" src="https://github.com/user-attachments/assets/ef01c491-dce9-469c-983b-07a059df223e" />
+<img width="2509" height="785" alt="image" src="https://github.com/user-attachments/assets/7464a647-28c9-4152-98b7-754970c25b1f" />
+<img width="1110" height="402" alt="image" src="https://github.com/user-attachments/assets/696735ba-29bf-4695-8275-1732cf433944" />
 </details>
 
 #### 🛗 ElevatorPlatform Blueprint
 
 <details>
 <summary>Click to expand</summary>
-
-<img width="2226" height="776" alt="Elevator 1" src="https://github.com/user-attachments/assets/e4a6ef0a-c62a-4cd1-8961-e090b8bbbac6" />
-<img width="2364" height="1149" alt="Elevator 2" src="https://github.com/user-attachments/assets/a89ea7cb-6c33-4cc7-9a50-b943fa34ce1a" />
-<img width="2413" height="1002" alt="Elevator 3" src="https://github.com/user-attachments/assets/bac03785-655f-4851-b17a-3f795745e68e" />
-<img width="1949" height="590" alt="Elevator 4" src="https://github.com/user-attachments/assets/511cbdaa-56c5-469a-9985-dfcaf345eff5" />
-<img width="1809" height="1019" alt="Elevator 5" src="https://github.com/user-attachments/assets/77e069ab-e135-42b9-a904-f821f95d6bf5" />
-<img width="1846" height="905" alt="Elevator 6" src="https://github.com/user-attachments/assets/ad41ea2b-b69b-43ae-9823-d9859e7fb16e" />
-<img width="1824" height="711" alt="Elevator 7" src="https://github.com/user-attachments/assets/9455f735-6e64-40d9-98c8-843fc8a3ffd5" />
-<img width="2327" height="904" alt="Elevator 8" src="https://github.com/user-attachments/assets/6f5cf12a-c7d9-4e09-a0ee-fc52993c5c26" />
-<img width="2372" height="816" alt="Elevator 9" src="https://github.com/user-attachments/assets/cce67c76-2234-4114-85f6-09a9dfa57056" />
-
+<img width="2335" height="747" alt="image" src="https://github.com/user-attachments/assets/feb54237-e42b-46c6-86dc-dd7649ac9608" />
+<img width="2270" height="1119" alt="image" src="https://github.com/user-attachments/assets/0547459e-a3d7-47d8-8e8d-16ecd00e48c4" />
+<img width="1817" height="1045" alt="image" src="https://github.com/user-attachments/assets/b1040922-0b0d-4d9e-8633-ff5ad84db889" />
+<img width="2271" height="737" alt="image" src="https://github.com/user-attachments/assets/55e082c7-2717-4ca8-883d-f19ca447545f" />
+<img width="2320" height="886" alt="image" src="https://github.com/user-attachments/assets/7f66a1d6-fe9e-471c-888d-adb6504316af" />
+<img width="2364" height="470" alt="image" src="https://github.com/user-attachments/assets/950f6a33-7fce-40c8-89d0-381aa6ff3859" />
+<img width="2519" height="553" alt="image" src="https://github.com/user-attachments/assets/31916e94-d4b6-4833-b9f0-7dffb5b4fcb8" />
+<img width="2522" height="906" alt="image" src="https://github.com/user-attachments/assets/7b731ba9-7bf5-41e5-bbc6-cfe05adcac01" />
+<img width="2351" height="689" alt="image" src="https://github.com/user-attachments/assets/0f4ff483-3db2-4219-83b8-ea435ad0d9a6" />
+<img width="2486" height="932" alt="image" src="https://github.com/user-attachments/assets/3cdf8a53-8650-45e7-8fe2-0438cd8ca32d" />
+<img width="2045" height="672" alt="image" src="https://github.com/user-attachments/assets/6b33bce5-3f16-4c24-b894-a22404dfbc74" />
 </details>
 
 #### 🔧 ElevatorPlatform: Functions & Variables
 
 <details>
 <summary>Click to expand</summary>
-
-<img width="513" height="856" alt="Var 1" src="https://github.com/user-attachments/assets/2617f3b9-051c-4beb-ba87-93d2fe7ff711" />
-<img width="1681" height="714" alt="Var 2" src="https://github.com/user-attachments/assets/d76b216c-0908-42e3-ad78-2bd59c2e2d19" />
-<img width="769" height="658" alt="Var 3" src="https://github.com/user-attachments/assets/75b9a371-409e-44fc-9205-11b719e0d19e" />
-<img width="1441" height="584" alt="Var 4" src="https://github.com/user-attachments/assets/b4e64c9c-9200-4fc5-b2f7-ec27f885e2c5" />
-<img width="2360" height="605" alt="Var 5" src="https://github.com/user-attachments/assets/cb8d1f2b-e7d0-48a2-ae02-a55fa44b9de6" />
-<img width="1735" height="536" alt="Var 6" src="https://github.com/user-attachments/assets/a9b763b5-9e66-424a-8292-880e53fd7e1e" />
-<img width="724" height="661" alt="Var 7" src="https://github.com/user-attachments/assets/b982e171-8afa-4e8e-a365-2c6f2bf06a2d" />
-<img width="2454" height="784" alt="Var 8" src="https://github.com/user-attachments/assets/abe1ca54-5b84-4c6d-95f5-a63156313c0b" />
-
+<img width="519" height="1221" alt="image" src="https://github.com/user-attachments/assets/a9fb60f8-812d-4283-92ce-53b03d9d8bca" />
+<img width="1699" height="604" alt="image" src="https://github.com/user-attachments/assets/e85b9c40-c411-43b4-957d-6abe7943edaf" />
+<img width="718" height="570" alt="image" src="https://github.com/user-attachments/assets/5a1ee092-9950-403a-aef1-2da8487f5115" />
+<img width="1363" height="455" alt="image" src="https://github.com/user-attachments/assets/5b479d48-a637-42da-87fb-aa29da91927d" />
+<img width="2393" height="550" alt="image" src="https://github.com/user-attachments/assets/2e8e1ee1-90d5-4303-8220-65276464da0f" />
+<img width="1875" height="714" alt="image" src="https://github.com/user-attachments/assets/2d1df7c5-32c4-4fa6-aa62-0abf4aa33fb6" />
+<img width="622" height="503" alt="image" src="https://github.com/user-attachments/assets/d00e7f60-1f07-4284-82fc-f3a9e8e63658" />
+<img width="2488" height="854" alt="image" src="https://github.com/user-attachments/assets/02d497af-e316-4f9d-8ca7-d0ffd66b26ce" />
 </details>
 
 #### 🚪 Gate
-
 <details>
 <summary>Click to expand</summary>
-
-<img width="1216" height="483" alt="Gate" src="https://github.com/user-attachments/assets/4d175d27-c9ef-46f9-9c26-91a5579915cc" />
-
+<img width="1539" height="616" alt="image" src="https://github.com/user-attachments/assets/0ba387e3-7a9d-444e-96d7-6f00457ed732" />
+<img width="1815" height="570" alt="image" src="https://github.com/user-attachments/assets/163ce819-f3df-450a-8196-63287e841a89" />
 > 💡 **Timeline Setup:** Click on the Timeline to edit it and add a Float Track. Add one keyframe at `0,0` and one at `1,1`. Then right-click on both and set interpolation to **Auto**.
 
 </details>
