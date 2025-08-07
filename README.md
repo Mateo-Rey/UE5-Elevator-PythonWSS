@@ -67,26 +67,16 @@ python unreal_websocket_ui.py
 * Lastly the Roots must be placed on the top left corner of each platform since the rows and columns for the grid are generated left to right and top to bottom
 ### 8. Follow Blueprint Setup Below
 * Human/Character
-  ![image](https://github.com/user-attachments/assets/94fbe2cb-a288-4a11-b310-732a25a35a18)
-  ![image](https://github.com/user-attachments/assets/243e055b-d2aa-41b2-a052-b94893b13f17)
-  ![image](https://github.com/user-attachments/assets/65ab0d83-a744-408a-8160-3a2569eb2321)
+  <img width="2448" height="739" alt="image" src="https://github.com/user-attachments/assets/f94c2aad-36e9-4ec3-8129-7dd248482415" />
+
 * ElevatorPlatform
-  ![image](https://github.com/user-attachments/assets/5179919a-8a8d-4cec-8c30-3fb9cd936720)
-  ![image](https://github.com/user-attachments/assets/034eeb8c-2fd1-421b-b769-0cc38e2b78ee)
-  ![image](https://github.com/user-attachments/assets/cf4d6ec7-f7d9-4b2a-8016-0240c29c0129)
-  ![image](https://github.com/user-attachments/assets/415bcbb4-a661-4521-80e9-9eb18435934c)
-  ![image](https://github.com/user-attachments/assets/b34a1bc8-cb41-4a9a-9e95-7487c2da5d35)
+  
 * Functions/Variables For ElevatorPlatform
-  ![image](https://github.com/user-attachments/assets/3d8ea6d4-5908-4858-88d3-339ed4bfe88a)
-  ![image](https://github.com/user-attachments/assets/64850982-8e9d-4ee2-bcc6-f4ff3e6ee7f6)
-  ![image](https://github.com/user-attachments/assets/0a4c27f4-1dd9-42f6-8a25-33135dba42a6)
-  ![image](https://github.com/user-attachments/assets/9b7c0da4-c983-481f-87f0-0074d1ee0e99)
-  ![image](https://github.com/user-attachments/assets/40258ab6-596f-4da3-9724-f8d1af915dd7)
-  ![image](https://github.com/user-attachments/assets/215ce2ce-ea60-4a58-828d-98c07323a4f4)
+ 
 * Top Unload Platform
-  ![image](https://github.com/user-attachments/assets/7136f397-94ce-4ed4-9e68-d28890e1f163)
+  
 * Gate
-  ![image](https://github.com/user-attachments/assets/b74c094b-4c79-42b7-a510-ec5b3f6de3b5)
+  
   * Click on the Timeline to edit it and add a Float Track. Add one keyframe at 0,0 and one at 1,1. After that right-click on both keyframes and set the interpolation to auto.
 ### 9. Key Instructions
 * First run the python server, then the ui, then the game simulation. This is because the ui has to receive the dimensions event and this is only sent once the simulation begins. After that you have to start with the direction as up and are free to test with as many pawns and elevator runtime as you like!
