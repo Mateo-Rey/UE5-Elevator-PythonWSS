@@ -127,15 +127,6 @@ python unreal_websocket_ui.py
 
 </details>
 
-#### 🟪 TopUnloadPlatform
-
-<details>
-<summary>Click to expand</summary>
-
-<img width="1409" height="571" alt="TopUnload" src="https://github.com/user-attachments/assets/8f4227c2-375c-45d7-b1f9-72e12b763646" />
-
-</details>
-
 #### 🚪 Gate
 
 <details>
