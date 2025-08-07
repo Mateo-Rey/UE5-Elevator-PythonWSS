@@ -3,8 +3,7 @@
 This project demonstrates WebSocket communication between Python and Unreal Engine 5 using a custom plugin and Blueprint setup.
 
 ## Demo
-https://github.com/user-attachments/assets/4d99d49d-10ed-41b7-aa22-65f3c9a774e5
-
+https://github.com/user-attachments/assets/f10af419-8c20-45e5-bdff-1236dac8c01b
 ## 📦 Requirements
 
 - Python 3.7+
@@ -61,11 +60,10 @@ python unreal_websocket_ui.py
   - BottomUnloadPlatform
   - BottomUnloadRoot
   - ElevatorSlotRoot
-  - TopUnloadRoot
   - Gate
   - ElevatorPlatform
-  - TopUnloadPlatform
-
+  - TopPlatform
+  - TopUnloadSlot
 - Create one Character Blueprint:
   - Human/Character
 
@@ -74,7 +72,6 @@ python unreal_websocket_ui.py
 ### 7. Placement of Blueprints
 
 - BottomUnloadPlatform should be placed under the floor to indicate the unload zone
-- ElevatorPlatform must connect with TopPlatform when it moves up
 - Add a **NavInvoker** component to the TopPlatform, ElevatorPlatform, and AI Pawns
 - Add a **NavMeshBoundsVolume** to generate navigation data around platforms
 - In UE5, go to **Edit → Project Settings → Runtime Generation** and set it to **Dynamic**
