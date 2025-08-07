@@ -150,9 +150,9 @@ python unreal_websocket_ui.py
 ### 9. Key Instructions
 
 - **Start Order:**
-  1. Run the Python WebSocket server
-  2. Run the UI (`unreal_websocket_ui.py`)
-  3. Start the UE5 simulation
+  * Run the Python WebSocket server
+  * Run the UI (`unreal_websocket_ui.py`)
+  * Start the UE5 simulation
 
 - The UI listens for a one-time `dimensions` event that only fires when the simulation begins.
 
